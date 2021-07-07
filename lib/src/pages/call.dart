@@ -1,14 +1,12 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
-import 'package:flutter/material.dart';
-
-import '../utils/settings.dart';
+import 'package:agora_flutter_quickstart/src/utils/settings.dart';
 
 class CallPage extends StatefulWidget {
-  /// non-modifiable channel name of the page
   final String? channelName;
 
   /// non-modifiable client role of the page
@@ -57,7 +55,9 @@ class _CallPageState extends State<CallPage> {
 
     await _initAgoraRtcEngine();
     _addAgoraEventHandlers();
+    // ignore: deprecated_member_use
     await _engine.enableWebSdkInteroperability(true);
+
     VideoEncoderConfiguration configuration = VideoEncoderConfiguration();
     configuration.dimensions = VideoDimensions(1920, 1080);
     await _engine.setVideoEncoderConfiguration(configuration);
@@ -135,41 +135,80 @@ class _CallPageState extends State<CallPage> {
   }
 
   /// Video layout wrapper
-  Widget _viewRows() {
+  // Widget _viewRows() {
+  //   final views = _getRenderViews();
+  //
+  //
+  //   switch (views.length) {
+  //     case 1:
+  //       return Container(
+  //           child: Column(
+  //         children: <Widget>[_videoView(views[0])],
+  //       ));
+  //     case 2:
+  //       return Container(
+  //           child: Column(
+  //         children: <Widget>[
+  //           _expandedVideoRow([views[0]]),
+  //           _expandedVideoRow([views[1]])
+  //         ],
+  //       ));
+  //     case 3:
+  //       return Container(
+  //           child: Column(
+  //         children: <Widget>[
+  //           _expandedVideoRow(views.sublist(0, 2)),
+  //           _expandedVideoRow(views.sublist(2, 3))
+  //         ],
+  //       ));
+  //     case 4:
+  //       return Container(
+  //           child: Column(
+  //         children: <Widget>[
+  //           _expandedVideoRow(views.sublist(0, 2)),
+  //           _expandedVideoRow(views.sublist(2, 4))
+  //         ],
+  //       ));
+  //     default:
+  //   }
+  //   return Container();
+  // }
+
+  List<Widget> _viewRows() {
     final views = _getRenderViews();
+    print('This is the number of the user: ${views.length}');
     switch (views.length) {
       case 1:
-        return Container(
-            child: Column(
-          children: <Widget>[_videoView(views[0])],
-        ));
+        return <Widget>[
+          _videoView(views[0]),
+          _toolbar(),
+        ];
       case 2:
-        return Container(
-            child: Column(
-          children: <Widget>[
-            _expandedVideoRow([views[0]]),
-            _expandedVideoRow([views[1]])
-          ],
-        ));
-      case 3:
-        return Container(
-            child: Column(
-          children: <Widget>[
-            _expandedVideoRow(views.sublist(0, 2)),
-            _expandedVideoRow(views.sublist(2, 3))
-          ],
-        ));
-      case 4:
-        return Container(
-            child: Column(
-          children: <Widget>[
-            _expandedVideoRow(views.sublist(0, 2)),
-            _expandedVideoRow(views.sublist(2, 4))
-          ],
-        ));
+        return <Widget>[
+          _videoView(views[1]),
+          // Positioned(
+          //   child: views[0],
+          //   top: 5,
+          //   right: 5,
+          //   height: 200,
+          //   width: 100,
+          // ),
+          Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 4,
+                  height: MediaQuery.of(context).size.height / 4,
+                  child: Align(child: views[0]),
+                ),
+              )),
+          _toolbar(),
+        ];
+
       default:
     }
-    return Container();
+    return <Widget>[];
   }
 
   /// Toolbar layout
@@ -236,7 +275,8 @@ class _CallPageState extends State<CallPage> {
             itemCount: _infoStrings.length,
             itemBuilder: (BuildContext context, int index) {
               if (_infoStrings.isEmpty) {
-                return Text("null");  // return type can't be null, a widget was required
+                return Text(
+                    "null"); // return type can't be null, a widget was required
               }
               return Padding(
                 padding: const EdgeInsets.symmetric(
@@ -290,17 +330,18 @@ class _CallPageState extends State<CallPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Agora Flutter QuickStart'),
-      ),
       backgroundColor: Colors.black,
       body: Center(
         child: Stack(
-          children: <Widget>[
-            _viewRows(),
-            _panel(),
-            _toolbar(),
-          ],
+          children: _viewRows(),
+          // children: <Widget>[
+          //   _viewRows(),
+          //   // _panel(),
+          //   // _videoView(RtcRemoteView.SurfaceView(uid: _users[0])),
+          //   // RtcLocalView.SurfaceView(),
+          //   //
+          //   // _toolbar(),
+          // ],
         ),
       ),
     );

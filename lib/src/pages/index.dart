@@ -1,17 +1,15 @@
 import 'dart:async';
-
-import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:flutter/material.dart';
+import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:agora_flutter_quickstart/src/pages/call.dart';
 
-import './call.dart';
-
-class IndexPage extends StatefulWidget {
+class HomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => IndexState();
 }
 
-class IndexState extends State<IndexPage> {
+class IndexState extends State<HomePage> {
   /// create a channelController to retrieve text value
   final _channelController = TextEditingController();
 
@@ -88,14 +86,15 @@ class IndexState extends State<IndexPage> {
                 child: Row(
                   children: <Widget>[
                     Expanded(
-                        child: ElevatedButton(
-                        onPressed: onJoin, 
+                      child: ElevatedButton(
+                        onPressed: onJoin,
                         child: Text('Join'),
                         style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(Colors.blueAccent),
-                          foregroundColor: MaterialStateProperty.all(Colors.white) 
-                        ),
-                        ),
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.blueAccent),
+                            foregroundColor:
+                                MaterialStateProperty.all(Colors.white)),
+                      ),
                     ),
                     // Expanded(
                     //   child: RaisedButton(
